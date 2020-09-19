@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^0.5.10
+  flip_card: ^0.4.4
 
 
 

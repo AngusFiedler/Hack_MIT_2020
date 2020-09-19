@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'flip_card.dart';
 import 'task.dart';
 
 void main() {
@@ -12,12 +13,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Habit Reminder',
+      title: 'Daily Habits',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Dashboard(title: 'Habit Reminder'),
+      home: Dashboard(title: 'Daily Habits'),
     );
   }
 }
@@ -56,79 +57,12 @@ class _DashboardState extends State<Dashboard> {
         title: Text(widget.title),
       ),
       body: GridView.count(
-        primary: false,
-        padding: const EdgeInsets.all(20),
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        crossAxisCount: 2,
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text("He'd have you all unravel at the"),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Heed not the rabble'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Sound of screams but the'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: Icon(Icons.school),
-            color: Colors.green,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: Icon(Icons.school),
-            color: Colors.redAccent,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Revolution is coming...'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Revolution, they...'),
-            color: Colors.deepOrange,
-          ),
-        ],
-      ),
+          primary: false,
+          padding: const EdgeInsets.all(20),
+          crossAxisSpacing: 10,
+          mainAxisSpacing: 10,
+          crossAxisCount: 2,
+          children: _create_cards()),
       // FAB for adding new card;
       // TODO: Create card method
       floatingActionButton: FloatingActionButton(
@@ -136,5 +70,65 @@ class _DashboardState extends State<Dashboard> {
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  // Creates widget's dynamically
+  List<Widget> _create_cards() {
+    List listings = List<Widget>();
+    int i = 0;
+    for (i = 0; i < 30; i++) {
+      listings.add(
+        FlipCard(
+          onFront: false,
+          direction: FlipDirection.HORIZONTAL, // default
+          front: Container(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('Task Complete!',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+                Icon(
+                  Icons.school,
+                  color: Colors.white,
+                ),
+                Text('Do my homework',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+              ],
+            ),
+            color: Colors.green,
+          ),
+          //   ),
+          back: Container(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Icon(
+                  Icons.school,
+                  color: Colors.white,
+                ),
+                Text('Do my homework',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+              ],
+            ),
+            color: Colors.red,
+          ),
+        ),
+
+        // Container(
+        //     padding: const EdgeInsets.all(8),
+        //     child: const Icon(Icons.school),
+        //     color: Colors.green,
+        //   ),
+      );
+    }
+    return listings;
   }
 }
