@@ -35,7 +35,7 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  TaskCollection collection;
+  TaskCollection collection = new TaskCollection(null, null);
 
   void _fetch_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
@@ -53,17 +53,23 @@ class _DashboardState extends State<Dashboard> {
     this._fetch_tasks();
   }
 
+  void addCard(String name, int interval) {
+    Task task = new Task(name, 0, "", interval);
+    print(collection.tasks);
+    collection.tasks.add(task);
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: Card generation
     List<Widget> cards = new List<Widget>();
 
-    this.collection.tasks.forEach((task) => {
-          cards.add(Container(
-              padding: const EdgeInsets.all(8),
-              child: const Text("Insert card text here"),
-              color: Colors.deepOrange))
-        });
+    // this.collection.tasks.forEach((task) => {
+    //       cards.add(Container(
+    //           padding: const EdgeInsets.all(8),
+    //           child: const Text("Insert card text here"),
+    //           color: Colors.deepOrange))
+    //     });
 
     return Scaffold(
       appBar: AppBar(
@@ -83,9 +89,10 @@ class _DashboardState extends State<Dashboard> {
         child: Icon(Icons.add),
         onPressed: () {
           Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HabitCreator()),
-          );
+              context,
+              MaterialPageRoute(
+                builder: (context) => HabitCreator(this.addCard),
+              ));
         },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

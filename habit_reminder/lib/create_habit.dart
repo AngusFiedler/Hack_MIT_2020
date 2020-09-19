@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:habit_reminder/task.dart';
 
 class HabitCreator extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final habitTextController = TextEditingController();
   final frequencyTextController = TextEditingController();
+
+  Function addCallback;
+
+  HabitCreator(Function callback) {
+    addCallback = callback;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +62,8 @@ class HabitCreator extends StatelessWidget {
             color: Colors.blue,
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                onSave(context,habitTextController.text,frequencyTextController.text);
+                onSave(context, habitTextController.text,
+                    frequencyTextController.text);
               }
             },
             child: Text(
@@ -69,7 +77,7 @@ class HabitCreator extends StatelessWidget {
   }
 
   void onSave(BuildContext context, habitName, habitFrequency) {
-    // TODO Add form saving functionality
+    this.addCallback(habitName, int.parse(habitFrequency));
     print(habitName);
     print(habitFrequency);
     Navigator.pop(context);
