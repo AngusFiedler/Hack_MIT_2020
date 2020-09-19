@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   shared_preferences: ^0.5.10
+  pull_to_refresh: ^1.6.0
 
 
 

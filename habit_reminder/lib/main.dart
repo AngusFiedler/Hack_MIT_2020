@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'task.dart';
 
@@ -32,24 +33,35 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  TaskCollection tasks;
-  SharedPreferences pref;
+  TaskCollection collection;
 
   void _fetch_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     Map json = jsonDecode(pref.getString('tasks'));
-    tasks = TaskCollection.fromJson(json);
+    collection = TaskCollection.fromJson(json);
   }
 
   void _save_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    String json = jsonEncode(tasks);
+    String json = jsonEncode(collection);
     pref.setString('tasks', json);
+  }
+
+  void refreshState() async {
+    this._fetch_tasks();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: Card generation
+    List<Widget> cards = new List<Widget>();
+
+    this.collection.tasks.forEach((task) => {
+          cards.add(Container(
+              padding: const EdgeInsets.all(8),
+              child: const Text("Insert card text here"),
+              color: Colors.deepOrange))
+        });
 
     return Scaffold(
       appBar: AppBar(
@@ -61,73 +73,7 @@ class _DashboardState extends State<Dashboard> {
         crossAxisSpacing: 10,
         mainAxisSpacing: 10,
         crossAxisCount: 2,
-        children: <Widget>[
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text("He'd have you all unravel at the"),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Heed not the rabble'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Sound of screams but the'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: Icon(Icons.school),
-            color: Colors.green,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: Icon(Icons.school),
-            color: Colors.redAccent,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Who scream'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Revolution is coming...'),
-            color: Colors.deepOrange,
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            child: const Text('Revolution, they...'),
-            color: Colors.deepOrange,
-          ),
-        ],
+        children: cards,
       ),
       // FAB for adding new card;
       // TODO: Create card method

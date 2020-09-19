@@ -1,4 +1,6 @@
-class Task {
+import 'package:flutter/cupertino.dart';
+
+class Task extends ChangeNotifier {
   final String name;
   int completed = 0;
   String icon;
