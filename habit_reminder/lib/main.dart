@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'flip_card.dart';
 import 'task.dart';
+import 'create_habit.dart';
 
 void main() {
   runApp(App());
@@ -15,7 +16,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       title: 'Daily Habits',
       theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
+        primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       home: Dashboard(title: 'Daily Habits'),
@@ -68,6 +69,12 @@ class _DashboardState extends State<Dashboard> {
       floatingActionButton: FloatingActionButton(
         tooltip: 'Increment',
         child: Icon(Icons.add),
+        onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HabitCreator()),
+            );
+          },
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -76,7 +83,7 @@ class _DashboardState extends State<Dashboard> {
   List<Widget> _create_cards() {
     List listings = List<Widget>();
     int i = 0;
-    for (i = 0; i < 30; i++) {
+    for (i = 0; i < 10; i++) {
       listings.add(
         FlipCard(
           onFront: false,
