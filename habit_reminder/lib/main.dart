@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flip_card/flip_card.dart';
+import 'flip_card.dart';
 
 void main() {
   runApp(App());
@@ -10,12 +10,12 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Habit Reminder',
+      title: 'Daily Habits',
       theme: ThemeData(
         primarySwatch: Colors.deepOrange,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Dashboard(title: 'Habit Reminder'),
+      home: Dashboard(title: 'Daily Habits'),
     );
   }
 }
@@ -62,19 +62,48 @@ class _DashboardState extends State<Dashboard> {
   List<Widget> _create_cards() {
     List listings = List<Widget>();
     int i = 0;
-    for (i = 0; i < 5; i++) {
+    for (i = 0; i < 30; i++) {
       listings.add(
         FlipCard(
+          onFront: false,
           direction: FlipDirection.HORIZONTAL, // default
           front: Container(
             padding: const EdgeInsets.all(8),
-            child: const Icon(Icons.school),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('Task Complete!',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+                Icon(
+                  Icons.school,
+                  color: Colors.white,
+                ),
+                Text('Do my homework',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+              ],
+            ),
             color: Colors.green,
           ),
-        //   ),
+          //   ),
           back: Container(
             padding: const EdgeInsets.all(8),
-            child: const Icon(Icons.school),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Icon(
+                  Icons.school,
+                  color: Colors.white,
+                ),
+                Text('Do my homework',
+                    style: TextStyle(
+                      color: Colors.white,
+                    )),
+              ],
+            ),
             color: Colors.red,
           ),
         ),
