@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'flip_card.dart';
+import 'task.dart';
 
 void main() {
   runApp(App());
@@ -30,8 +33,19 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  void _fetch_tasks() {
-    // TODO: fetch from localstorage
+  TaskCollection tasks;
+  SharedPreferences pref;
+
+  void _fetch_tasks() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    Map json = jsonDecode(pref.getString('tasks'));
+    tasks = TaskCollection.fromJson(json);
+  }
+
+  void _save_tasks() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    String json = jsonEncode(tasks);
+    pref.setString('tasks', json);
   }
 
   @override
