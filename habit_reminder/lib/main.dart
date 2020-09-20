@@ -36,11 +36,19 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   TaskCollection collection = new TaskCollection(null, null);
+  List<Task> myTasks;
 
   void _fetch_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    Map json = jsonDecode(pref.getString('tasks'));
-    collection = TaskCollection.fromJson(json);
+    print(pref.getString('tasks'));
+    if (pref.getString('tasks') != null) {
+      Map json = jsonDecode(pref.getString('tasks'));
+      setState(() {
+        collection = TaskCollection.fromJson(json);
+      });
+    } else {
+      print("Is null!!");
+    }
   }
 
   void _save_tasks() async {
@@ -82,6 +90,7 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
+    refreshState();
     // TODO: Card generation
     List<Widget> cards = new List<Widget>();
 
@@ -131,10 +140,12 @@ class _DashboardState extends State<Dashboard> {
   List<Widget> _create_cards() {
     List listings = List<Widget>();
     int i = 0;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < collection.tasks.length; i++) {
+      bool check_front = false;
+      // if (collection.tasks[i].completed >= 1) {check_front=true;}
       listings.add(
         FlipCard(
-          onFront: false,
+          onFront: check_front,
           direction: FlipDirection.HORIZONTAL, // default
           front: Container(
             padding: const EdgeInsets.all(8),
@@ -149,7 +160,7 @@ class _DashboardState extends State<Dashboard> {
                   Icons.school,
                   color: Colors.white,
                 ),
-                Text('Do my homework',
+                Text(collection.tasks[i].name,
                     style: TextStyle(
                       color: Colors.white,
                     )),
@@ -167,7 +178,7 @@ class _DashboardState extends State<Dashboard> {
                   Icons.school,
                   color: Colors.white,
                 ),
-                Text('Do my homework',
+                Text(collection.tasks[i].name,
                     style: TextStyle(
                       color: Colors.white,
                     )),
