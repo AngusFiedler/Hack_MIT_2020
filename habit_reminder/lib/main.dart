@@ -40,9 +40,12 @@ class _DashboardState extends State<Dashboard> {
 
   void _fetch_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
+    print(pref.getString('tasks'));
     if (pref.getString('tasks') != null) {
       Map json = jsonDecode(pref.getString('tasks'));
       collection = TaskCollection.fromJson(json);
+    } else {
+      print("Is null!!");
     }
     setState(() {
       listings = _create_cards();
@@ -61,8 +64,30 @@ class _DashboardState extends State<Dashboard> {
 
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
-    collection.tasks.add(task);
-    this._fetch_tasks();
+    print(collection.tasks);
+    this.collection.tasks.add(task);
+  }
+
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: true);
+
+  void _onRefresh() async {
+    print('onrefresh');
+    this.refreshState();
+    setState(() {});
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    print('onloading');
+    await Future.delayed(Duration(milliseconds: 1000));
+    print('onloading delayed');
+    if (mounted) {
+      setState(() {
+        print('loading cats...');
+      });
+    }
+    _refreshController.loadComplete();
   }
 
   @override
@@ -74,13 +99,21 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: GridView.count(
-          primary: false,
-          padding: const EdgeInsets.all(20),
-          crossAxisSpacing: 10,
-          mainAxisSpacing: 10,
-          crossAxisCount: 2,
-          children: listings),
+      body: SmartRefresher(
+        enablePullDown: true,
+        enablePullUp: false,
+        header: WaterDropHeader(),
+        controller: _refreshController,
+        onRefresh: _onRefresh,
+        onLoading: _onLoading,
+        child: GridView.count(
+            primary: false,
+            padding: const EdgeInsets.all(20),
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            crossAxisCount: 2,
+            children: _create_cards()),
+      ),
       // FAB for adding new card;
       floatingActionButton: FloatingActionButton(
         tooltip: 'Increment',
