@@ -37,9 +37,13 @@ class Dashboard extends StatefulWidget {
 // typedef FlipCallBack = void Function(int index);
 
 class _DashboardState extends State<Dashboard> {
+  // Task collection stores all user tasks locally
   TaskCollection collection = new TaskCollection(null, null);
+
+  // Listings is a list of widgets containing each task from above
   List listings = List<Widget>();
 
+  /// Fetches stored data from shared preferences and parses the data
   void fetchTasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     print(pref.getString('tasks'));
@@ -52,6 +56,7 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  /// Saves the current state of all tasks to the device
   void saveTasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String json = jsonEncode(collection);
@@ -62,6 +67,7 @@ class _DashboardState extends State<Dashboard> {
     this.fetchTasks();
   }
 
+  /// Adds a new task/habit to the database and updates the state
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
     this.collection.tasks.add(task);
@@ -69,16 +75,19 @@ class _DashboardState extends State<Dashboard> {
     this.refreshState();
   }
 
-  void deleteTask(int index){
+  /// Deletes a task from the list and saves the resulting list
+  void deleteTask(int index) {
     this.collection.tasks.removeAt(index);
     this.saveTasks();
     this.refreshState();
   }
 
+  /// Alerts the user they are about to delete a card
   void deleteCard(int index) {
-    showAlertDialog(context,index);
+    showAlertDialog(context, index);
   }
 
+  /// Sets a task to completion at the given index
   void setTaskComplete(int index, bool success) {
     if (success) {
       this.collection.tasks[index].completed = 1;
@@ -133,17 +142,22 @@ class _DashboardState extends State<Dashboard> {
             children: createCards()),
       ),
       // FAB for adding new card;
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => HabitCreator(this.addCard),
-              ));
-        },
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton:
+          fab(), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+
+  FloatingActionButton fab() {
+    return FloatingActionButton(
+      tooltip: 'Increment',
+      child: Icon(Icons.add),
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => HabitCreator(this.addCard),
+            ));
+      },
     );
   }
 
@@ -202,7 +216,7 @@ class _DashboardState extends State<Dashboard> {
     return listings;
   }
 
-  showAlertDialog(BuildContext context,int index) {
+  showAlertDialog(BuildContext context, int index) {
     bool result;
     // set up the buttons
     Widget deleteButton = FlatButton(
@@ -220,12 +234,11 @@ class _DashboardState extends State<Dashboard> {
         Navigator.of(context).pop(); // dismiss dialog
       },
     );
-    
+
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       title: Text("Alert"),
-      content: Text(
-          "Are you sure you want to delete this habit / task?"),
+      content: Text("Are you sure you want to delete this habit / task?"),
       actions: [
         deleteButton,
         cancelButton,
