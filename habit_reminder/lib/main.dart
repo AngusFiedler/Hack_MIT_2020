@@ -43,13 +43,11 @@ class _DashboardState extends State<Dashboard> {
     print(pref.getString('tasks'));
     if (pref.getString('tasks') != null) {
       Map json = jsonDecode(pref.getString('tasks'));
-      collection = TaskCollection.fromJson(json);
-    } else {
-      print("Is null!!");
+      this.collection = TaskCollection.fromJson(json);
+      setState(() {
+        listings = _create_cards();
+      });
     }
-    setState(() {
-      listings = _create_cards();
-    });
   }
 
   void _save_tasks() async {
@@ -93,7 +91,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    refreshState();
     List<Widget> cards = new List<Widget>();
 
     return Scaffold(
@@ -152,6 +149,9 @@ class _DashboardState extends State<Dashboard> {
 
   // Creates widget's dynamically
   List<Widget> _create_cards() {
+    if (collection.tasks == null) {
+      return List<Widget>();
+    }
     List listings = List<Widget>();
     int i = 0;
     for (i = 0; i < collection.tasks.length; i++) {
