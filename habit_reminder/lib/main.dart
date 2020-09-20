@@ -59,13 +59,14 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void refreshState() async {
-    // this._fetch_tasks();
+    this._fetch_tasks();
   }
 
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
-    print(collection.tasks);
     this.collection.tasks.add(task);
+    this.refreshState();
+    this._save_tasks();
   }
 
   RefreshController _refreshController =
@@ -92,7 +93,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    refreshState();
     // TODO: Card generation
     List<Widget> cards = new List<Widget>();
 
