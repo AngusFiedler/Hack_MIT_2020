@@ -45,13 +45,11 @@ class _DashboardState extends State<Dashboard> {
     print(pref.getString('tasks'));
     if (pref.getString('tasks') != null) {
       Map json = jsonDecode(pref.getString('tasks'));
-      collection = TaskCollection.fromJson(json);
-    } else {
-      print("Is null!!");
+      this.collection = TaskCollection.fromJson(json);
+      setState(() {
+        listings = createCards();
+      });
     }
-    setState(() {
-      listings = createCards();
-    });
   }
 
   void saveTasks() async {
@@ -72,13 +70,12 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void setTaskComplete(int index, bool success) {
-    if (success){
+    if (success) {
       this.collection.tasks[index].completed = 1;
-    }
-    else {
+    } else {
       this.collection.tasks[index].completed = 0;
     }
-      
+
     this.saveTasks();
   }
 
@@ -162,6 +159,9 @@ class _DashboardState extends State<Dashboard> {
 
   // Creates widget's dynamically
   List<Widget> createCards() {
+    if (collection.tasks == null) {
+      return List<Widget>();
+    }
     List listings = List<Widget>();
     int i = 0;
     for (i = 0; i < collection.tasks.length; i++) {
@@ -174,8 +174,7 @@ class _DashboardState extends State<Dashboard> {
           direction: FlipDirection.HORIZONTAL, // default
           front: Container(
             padding: const EdgeInsets.all(8),
-            child:
-                createCardColumn("Task Complete", collection.tasks[i].name),
+            child: createCardColumn("Task Complete", collection.tasks[i].name),
             color: Colors.green,
           ),
           //   ),

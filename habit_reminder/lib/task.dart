@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 
 class Task extends ChangeNotifier {
@@ -9,8 +11,12 @@ class Task extends ChangeNotifier {
   Task(this.name, this.completed, this.icon, this.frequency);
 
   // Backup - use if it's not serializing the obj
-  // Task.fromJson(Map<String, dynamic> json) : name = json['name'];
-  // Map<String, dynamic> toJson() => {'name': name};
+  Task.fromJson(Map<String, dynamic> json)
+      : name = json['name'],
+        completed = json['completed'],
+        frequency = json['frequency'];
+  Map<String, dynamic> toJson() =>
+      {'name': name, 'completed': completed, 'frequency': frequency};
 }
 
 class TaskCollection {
@@ -18,12 +24,14 @@ class TaskCollection {
 
   List<Task> tasks; // == null?????
 
-  TaskCollection(DateTime createdDate, List<Task> tasks)
-      : createdDate = null,
-        tasks = <Task>[];
+  TaskCollection(DateTime createdDate, List<Task> _tasks)
+      : createdDate = new DateTime.now(),
+        tasks = _tasks;
 
   factory TaskCollection.fromJson(Map<String, dynamic> json) {
-    return new TaskCollection(json['name'] ?? "", json['tasks'] ?? "");
+    List<Task> tasks =
+        (json['tasks']).map<Task>((i) => Task.fromJson(i)).toList();
+    return new TaskCollection(json['createdDate'] ?? new DateTime.now(), tasks);
   }
 
   Map<String, dynamic> toJson() {
