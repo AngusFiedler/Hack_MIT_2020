@@ -8,7 +8,7 @@ class HabitCreator extends StatelessWidget {
   final habitTextController = TextEditingController();
   final frequencyTextController = TextEditingController();
 
-  String iconSelection = null;
+  String iconSelection = "";
 
   Function addCallback;
 
