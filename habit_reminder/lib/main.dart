@@ -72,7 +72,8 @@ class _DashboardState extends State<Dashboard> {
 
   void _onRefresh() async {
     print('onrefresh');
-
+    this.refreshState();
+    setState(() {});
     _refreshController.refreshCompleted();
   }
 
