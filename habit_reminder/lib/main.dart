@@ -36,19 +36,20 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   TaskCollection collection = new TaskCollection(null, null);
-  List<Task> myTasks;
+  List listings = List<Widget>();
 
   void _fetch_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     print(pref.getString('tasks'));
     if (pref.getString('tasks') != null) {
       Map json = jsonDecode(pref.getString('tasks'));
-      setState(() {
-        collection = TaskCollection.fromJson(json);
-      });
+      collection = TaskCollection.fromJson(json);
     } else {
       print("Is null!!");
     }
+    setState(() {
+      listings = _create_cards();
+    });
   }
 
   void _save_tasks() async {
@@ -58,7 +59,7 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void refreshState() async {
-    this._fetch_tasks();
+    // this._fetch_tasks();
   }
 
   void addCard(String name, int interval) {
