@@ -20,7 +20,7 @@ class TaskCollection {
 
   TaskCollection(DateTime createdDate, List<Task> tasks)
       : createdDate = null,
-        tasks = new List<Task>();
+        tasks = <Task>[];
 
   factory TaskCollection.fromJson(Map<String, dynamic> json) {
     return new TaskCollection(json['name'] ?? "", json['tasks'] ?? "");
