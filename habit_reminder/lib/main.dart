@@ -46,7 +46,6 @@ class _DashboardState extends State<Dashboard> {
   /// Fetches stored data from shared preferences and parses the data
   void fetchTasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    print(pref.getString('tasks'));
     if (pref.getString('tasks') != null) {
       Map json = jsonDecode(pref.getString('tasks'));
       this.collection = TaskCollection.fromJson(json);
@@ -102,20 +101,15 @@ class _DashboardState extends State<Dashboard> {
       RefreshController(initialRefresh: true);
 
   void _onRefresh() async {
-    print('onrefresh');
     this.refreshState();
     setState(() {});
     _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
-    print('onloading');
     await Future.delayed(Duration(milliseconds: 1000));
-    print('onloading delayed');
     if (mounted) {
-      setState(() {
-        print('loading cats...');
-      });
+      setState(() {});
     }
     _refreshController.loadComplete();
   }
