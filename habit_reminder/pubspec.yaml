@@ -26,6 +26,7 @@ dependencies:
   shared_preferences: ^0.5.10
   pull_to_refresh: ^1.6.0
   flip_card: ^0.4.4
+  icon_picker: ^1.1.0
 
 
 
