@@ -110,7 +110,7 @@ class _DashboardState extends State<Dashboard> {
       body: SmartRefresher(
         enablePullDown: true,
         enablePullUp: false,
-        header: WaterDropHeader(),
+        header: WaterDropMaterialHeader(),
         controller: _refreshController,
         onRefresh: _onRefresh,
         onLoading: _onLoading,
@@ -172,16 +172,16 @@ class _DashboardState extends State<Dashboard> {
           cardIndex: i,
           onFront: checkFront,
           direction: FlipDirection.HORIZONTAL, // default
-          front: Container(
-            padding: const EdgeInsets.all(8),
-            child: createCardColumn("Task Complete", collection.tasks[i].name),
-            color: Colors.green,
-          ),
-          //   ),
           back: Container(
             padding: const EdgeInsets.all(8),
+            child: createCardColumn("Task Complete", collection.tasks[i].name),
+            color: Colors.lightGreen[500],
+          ),
+          //   ),
+          front: Container(
+            padding: const EdgeInsets.all(8),
             child: createCardColumn("Incomplete", collection.tasks[i].name),
-            color: Colors.red,
+            color: Colors.deepOrange[500],
           ),
         ),
       );
