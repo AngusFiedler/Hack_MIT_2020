@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:icon_picker/icon_picker.dart';
 import 'flip_card.dart';
 import 'task.dart';
 import 'create_habit.dart';
@@ -62,14 +63,14 @@ class _DashboardState extends State<Dashboard> {
     this.fetchTasks();
   }
 
-  void addCard(String name, int interval) {
-    Task task = new Task(name, 0, "", interval);
+  void addCard(String name, int interval, String icon) {
+    Task task = new Task(name, 0, icon, interval);
     this.collection.tasks.add(task);
     this.saveTasks();
     this.refreshState();
   }
 
-  void deleteCard(int index){
+  void deleteCard(int index) {
     this.collection.tasks.removeAt(index);
     this.saveTasks();
     this.refreshState();
@@ -83,6 +84,14 @@ class _DashboardState extends State<Dashboard> {
     }
 
     this.saveTasks();
+  }
+
+  IconData getIconFromJson(String json) {
+    if (json == "") {
+      return null;
+    }
+    var data = jsonDecode(json);
+    return IconData(data['codePoint'], fontFamily: data['fontFamily']);
   }
 
   RefreshController _refreshController =
@@ -143,7 +152,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Column createCardColumn(String topCard, String task) {
+  Column createCardColumn(String topCard, Task task) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -152,10 +161,10 @@ class _DashboardState extends State<Dashboard> {
               color: Colors.white,
             )),
         Icon(
-          Icons.school,
+          this.getIconFromJson(task.icon) ?? Icons.assignment,
           color: Colors.white,
         ),
-        Text(task,
+        Text(task.name,
             style: TextStyle(
               color: Colors.white,
             )),
@@ -171,7 +180,9 @@ class _DashboardState extends State<Dashboard> {
     List listings = List<Widget>();
     for (int i = 0; i < collection.tasks.length; i++) {
       bool checkFront = false;
-      if (collection.tasks[i].completed >= 1) {checkFront = true;}
+      if (collection.tasks[i].completed >= 1) {
+        checkFront = true;
+      }
       listings.add(
         FlipCard(
           onTap: setTaskComplete,
@@ -181,13 +192,13 @@ class _DashboardState extends State<Dashboard> {
           direction: FlipDirection.HORIZONTAL, // default
           back: Container(
             padding: const EdgeInsets.all(8),
-            child: createCardColumn("Task Complete", collection.tasks[i].name),
+            child: createCardColumn("Task Complete", collection.tasks[i]),
             color: Colors.lightGreen[500],
           ),
           //   ),
           front: Container(
             padding: const EdgeInsets.all(8),
-            child: createCardColumn("Incomplete", collection.tasks[i].name),
+            child: createCardColumn("Incomplete", collection.tasks[i]),
             color: Colors.deepOrange[500],
           ),
         ),
