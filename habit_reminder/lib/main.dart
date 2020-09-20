@@ -65,8 +65,8 @@ class _DashboardState extends State<Dashboard> {
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
     this.collection.tasks.add(task);
-    this.refreshState();
     this.saveTasks();
+    this.refreshState();
   }
 
   void setTaskComplete(int index, bool success) {

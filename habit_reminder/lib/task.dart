@@ -10,13 +10,18 @@ class Task extends ChangeNotifier {
 
   Task(this.name, this.completed, this.icon, this.frequency);
 
-  // Backup - use if it's not serializing the obj
   Task.fromJson(Map<String, dynamic> json)
       : name = json['name'],
         completed = json['completed'],
-        frequency = json['frequency'];
-  Map<String, dynamic> toJson() =>
-      {'name': name, 'completed': completed, 'frequency': frequency};
+        frequency = json['frequency'],
+        icon = json['icon'];
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'completed': completed,
+        'frequency': frequency,
+        'icon': icon
+      };
 }
 
 class TaskCollection {
@@ -31,10 +36,14 @@ class TaskCollection {
   factory TaskCollection.fromJson(Map<String, dynamic> json) {
     List<Task> tasks =
         (json['tasks']).map<Task>((i) => Task.fromJson(i)).toList();
-    return new TaskCollection(json['createdDate'] ?? new DateTime.now(), tasks);
+    DateTime _createdDate = DateTime.parse(json['createdDate']);
+    return new TaskCollection(_createdDate, tasks);
   }
 
   Map<String, dynamic> toJson() {
-    return {"createdDate": this.createdDate, "tasks": this.tasks};
+    return {
+      "createdDate": this.createdDate.toIso8601String(),
+      "tasks": this.tasks
+    };
   }
 }
