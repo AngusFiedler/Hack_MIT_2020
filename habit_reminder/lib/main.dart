@@ -34,7 +34,7 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
-typedef FlipCallBack = void Function(int index);
+// typedef FlipCallBack = void Function(int index);
 
 class _DashboardState extends State<Dashboard> {
   TaskCollection collection = new TaskCollection(null, null);
@@ -65,6 +65,12 @@ class _DashboardState extends State<Dashboard> {
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
     this.collection.tasks.add(task);
+    this.saveTasks();
+    this.refreshState();
+  }
+
+  void deleteCard(int index){
+    this.collection.tasks.removeAt(index);
     this.saveTasks();
     this.refreshState();
   }
@@ -169,6 +175,7 @@ class _DashboardState extends State<Dashboard> {
       listings.add(
         FlipCard(
           onTap: setTaskComplete,
+          onHold: deleteCard,
           cardIndex: i,
           onFront: checkFront,
           direction: FlipDirection.HORIZONTAL, // default

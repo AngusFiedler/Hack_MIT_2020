@@ -9,6 +9,7 @@ enum FlipDirection {
 }
 
 typedef FlipCallBack = void Function(int index, bool completed);
+typedef OnHoldCallback = void Function(int index);
 
 class AnimationCard extends StatelessWidget {
   AnimationCard({this.child, this.animation, this.direction});
@@ -53,6 +54,7 @@ class FlipCard extends StatefulWidget {
   final BoolCallback onFlipDone;
 
   final FlipCallBack onTap;
+  final OnHoldCallback onHold;
 
   final int cardIndex;
 
@@ -70,6 +72,7 @@ class FlipCard extends StatefulWidget {
       this.onFlipDone,
       this.onFront,
       this.onTap,
+      this.onHold,
       this.direction = FlipDirection.HORIZONTAL,
       this.flipOnTouch = true})
       : super(key: key);
@@ -166,6 +169,7 @@ class FlipCardState extends State<FlipCard>
       return GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: toggleCard,
+        onLongPress: () {widget.onHold(widget.cardIndex);},
         child: child,
       );
     }
