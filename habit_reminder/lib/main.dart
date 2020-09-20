@@ -36,21 +36,22 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   TaskCollection collection = new TaskCollection(null, null);
-  List<Task> myTasks;
+  List listings = List<Widget>();
 
   void _fetch_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     print(pref.getString('tasks'));
     if (pref.getString('tasks') != null){
       Map json = jsonDecode(pref.getString('tasks'));
-      setState(() {
-        collection = TaskCollection.fromJson(json);
-      });
+      collection = TaskCollection.fromJson(json);
       
     }
     else {
       print("Is null!!");
     }
+    setState(() {
+        listings = _create_cards();
+      });
     
   }
 
@@ -61,14 +62,14 @@ class _DashboardState extends State<Dashboard> {
   }
 
   void refreshState() async {
-    this._fetch_tasks();
+    // this._fetch_tasks();
   }
 
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
     print(collection.tasks);
     collection.tasks.add(task);
-    this.refreshState();
+    this._fetch_tasks();
   }
 
   @override
@@ -94,7 +95,7 @@ class _DashboardState extends State<Dashboard> {
           crossAxisSpacing: 10,
           mainAxisSpacing: 10,
           crossAxisCount: 2,
-          children: _create_cards()),
+          children: listings),
       // FAB for adding new card;
       // TODO: Create card method
       floatingActionButton: FloatingActionButton(
