@@ -125,6 +125,7 @@ class FlipCardState extends State<FlipCard>
         if (widget.onFlipDone != null) widget.onFlipDone(isFront);
       }
     });
+    // If the flip card is supposed to be on the completed side, ie back then flip the card
     if (!widget.onFront) {
       controller.forward();
       setState(() {

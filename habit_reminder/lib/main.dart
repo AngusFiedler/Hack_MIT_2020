@@ -163,9 +163,9 @@ class _DashboardState extends State<Dashboard> {
       return List<Widget>();
     }
     List listings = List<Widget>();
-    int i = 0;
-    for (i = 0; i < collection.tasks.length; i++) {
+    for (int i = 0; i < collection.tasks.length; i++) {
       bool checkFront = false;
+      if (collection.tasks[i].completed >= 1) {checkFront = true;}
       listings.add(
         FlipCard(
           onTap: setTaskComplete,
