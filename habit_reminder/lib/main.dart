@@ -69,10 +69,14 @@ class _DashboardState extends State<Dashboard> {
     this.refreshState();
   }
 
-  void deleteCard(int index){
+  void deleteTask(int index){
     this.collection.tasks.removeAt(index);
     this.saveTasks();
     this.refreshState();
+  }
+
+  void deleteCard(int index) {
+    showAlertDialog(context,index);
   }
 
   void setTaskComplete(int index, bool success) {
@@ -171,7 +175,9 @@ class _DashboardState extends State<Dashboard> {
     List listings = List<Widget>();
     for (int i = 0; i < collection.tasks.length; i++) {
       bool checkFront = false;
-      if (collection.tasks[i].completed >= 1) {checkFront = true;}
+      if (collection.tasks[i].completed >= 1) {
+        checkFront = true;
+      }
       listings.add(
         FlipCard(
           onTap: setTaskComplete,
@@ -179,13 +185,13 @@ class _DashboardState extends State<Dashboard> {
           cardIndex: i,
           onFront: checkFront,
           direction: FlipDirection.HORIZONTAL, // default
-          back: Container(
+          front: Container(
             padding: const EdgeInsets.all(8),
             child: createCardColumn("Task Complete", collection.tasks[i].name),
             color: Colors.lightGreen[500],
           ),
           //   ),
-          front: Container(
+          back: Container(
             padding: const EdgeInsets.all(8),
             child: createCardColumn("Incomplete", collection.tasks[i].name),
             color: Colors.deepOrange[500],
@@ -194,5 +200,45 @@ class _DashboardState extends State<Dashboard> {
       );
     }
     return listings;
+  }
+
+  showAlertDialog(BuildContext context,int index) {
+    bool result;
+    // set up the buttons
+    Widget deleteButton = FlatButton(
+      color: Colors.red,
+      child: Text("Delete"),
+      onPressed: () {
+        Navigator.of(context).pop(); // dismiss dialog
+        deleteTask(index);
+      },
+    );
+    Widget cancelButton = FlatButton(
+      color: Colors.blue,
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context).pop(); // dismiss dialog
+      },
+    );
+    
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Alert"),
+      content: Text(
+          "Are you sure you want to delete this habit / task?"),
+      actions: [
+        deleteButton,
+        cancelButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+    return result;
   }
 }
