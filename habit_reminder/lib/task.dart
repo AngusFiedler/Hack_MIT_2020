@@ -31,7 +31,7 @@ class TaskCollection {
 
   TaskCollection(DateTime createdDate, List<Task> _tasks)
       : createdDate = new DateTime.now(),
-        tasks = _tasks;
+        tasks = _tasks ?? new List<Task>();
 
   factory TaskCollection.fromJson(Map<String, dynamic> json) {
     List<Task> tasks =
