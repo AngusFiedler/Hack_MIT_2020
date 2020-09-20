@@ -8,6 +8,8 @@ enum FlipDirection {
   HORIZONTAL,
 }
 
+typedef FlipCallBack = void Function(int index, bool completed);
+
 class AnimationCard extends StatelessWidget {
   AnimationCard({this.child, this.animation, this.direction});
 
@@ -50,6 +52,10 @@ class FlipCard extends StatefulWidget {
   final VoidCallback onFlip;
   final BoolCallback onFlipDone;
 
+  final FlipCallBack onTap;
+
+  final int cardIndex;
+
   final bool onFront;
 
   final bool flipOnTouch;
@@ -58,10 +64,12 @@ class FlipCard extends StatefulWidget {
       {Key key,
       @required this.front,
       @required this.back,
+      @required this.cardIndex,
       this.speed = 500,
       this.onFlip,
       this.onFlipDone,
       this.onFront,
+      this.onTap,
       this.direction = FlipDirection.HORIZONTAL,
       this.flipOnTouch = true})
       : super(key: key);
@@ -130,8 +138,10 @@ class FlipCardState extends State<FlipCard>
       widget.onFlip();
     }
     if (isFront) {
+      widget.onTap(widget.cardIndex,false);
       controller.forward();
     } else {
+      widget.onTap(widget.cardIndex,true);
       controller.reverse();
     }
 

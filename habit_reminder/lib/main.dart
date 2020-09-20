@@ -34,11 +34,13 @@ class Dashboard extends StatefulWidget {
   _DashboardState createState() => _DashboardState();
 }
 
+typedef FlipCallBack = void Function(int index);
+
 class _DashboardState extends State<Dashboard> {
   TaskCollection collection = new TaskCollection(null, null);
   List listings = List<Widget>();
 
-  void _fetch_tasks() async {
+  void fetchTasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     print(pref.getString('tasks'));
     if (pref.getString('tasks') != null) {
@@ -48,25 +50,36 @@ class _DashboardState extends State<Dashboard> {
       print("Is null!!");
     }
     setState(() {
-      listings = _create_cards();
+      listings = createCards();
     });
   }
 
-  void _save_tasks() async {
+  void saveTasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
     String json = jsonEncode(collection);
     pref.setString('tasks', json);
   }
 
   void refreshState() async {
-    this._fetch_tasks();
+    this.fetchTasks();
   }
 
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
     this.collection.tasks.add(task);
     this.refreshState();
-    this._save_tasks();
+    this.saveTasks();
+  }
+
+  void setTaskComplete(int index, bool success) {
+    if (success){
+      this.collection.tasks[index].completed = 1;
+    }
+    else {
+      this.collection.tasks[index].completed = 0;
+    }
+      
+    this.saveTasks();
   }
 
   RefreshController _refreshController =
@@ -93,9 +106,6 @@ class _DashboardState extends State<Dashboard> {
 
   @override
   Widget build(BuildContext context) {
-    refreshState();
-    List<Widget> cards = new List<Widget>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
@@ -113,7 +123,7 @@ class _DashboardState extends State<Dashboard> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
             crossAxisCount: 2,
-            children: _create_cards()),
+            children: createCards()),
       ),
       // FAB for adding new card;
       floatingActionButton: FloatingActionButton(
@@ -130,7 +140,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Column _create_card_column(String topCard, String task) {
+  Column createCardColumn(String topCard, String task) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -151,25 +161,27 @@ class _DashboardState extends State<Dashboard> {
   }
 
   // Creates widget's dynamically
-  List<Widget> _create_cards() {
+  List<Widget> createCards() {
     List listings = List<Widget>();
     int i = 0;
     for (i = 0; i < collection.tasks.length; i++) {
-      bool check_front = false;
+      bool checkFront = false;
       listings.add(
         FlipCard(
-          onFront: check_front,
+          onTap: setTaskComplete,
+          cardIndex: i,
+          onFront: checkFront,
           direction: FlipDirection.HORIZONTAL, // default
           front: Container(
             padding: const EdgeInsets.all(8),
             child:
-                _create_card_column("Task Complete", collection.tasks[i].name),
+                createCardColumn("Task Complete", collection.tasks[i].name),
             color: Colors.green,
           ),
           //   ),
           back: Container(
             padding: const EdgeInsets.all(8),
-            child: _create_card_column("Incomplete", collection.tasks[i].name),
+            child: createCardColumn("Incomplete", collection.tasks[i].name),
             color: Colors.red,
           ),
         ),
