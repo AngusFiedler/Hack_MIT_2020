@@ -40,19 +40,13 @@ class _DashboardState extends State<Dashboard> {
 
   void _fetch_tasks() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    print(pref.getString('tasks'));
-    if (pref.getString('tasks') != null){
+    if (pref.getString('tasks') != null) {
       Map json = jsonDecode(pref.getString('tasks'));
       collection = TaskCollection.fromJson(json);
-      
-    }
-    else {
-      print("Is null!!");
     }
     setState(() {
-        listings = _create_cards();
-      });
-    
+      listings = _create_cards();
+    });
   }
 
   void _save_tasks() async {
@@ -67,7 +61,6 @@ class _DashboardState extends State<Dashboard> {
 
   void addCard(String name, int interval) {
     Task task = new Task(name, 0, "", interval);
-    print(collection.tasks);
     collection.tasks.add(task);
     this._fetch_tasks();
   }
@@ -75,15 +68,7 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     refreshState();
-    // TODO: Card generation
     List<Widget> cards = new List<Widget>();
-
-    // this.collection.tasks.forEach((task) => {
-    //       cards.add(Container(
-    //           padding: const EdgeInsets.all(8),
-    //           child: const Text("Insert card text here"),
-    //           color: Colors.deepOrange))
-    //     });
 
     return Scaffold(
       appBar: AppBar(
@@ -97,7 +82,6 @@ class _DashboardState extends State<Dashboard> {
           crossAxisCount: 2,
           children: listings),
       // FAB for adding new card;
-      // TODO: Create card method
       floatingActionButton: FloatingActionButton(
         tooltip: 'Increment',
         child: Icon(Icons.add),
@@ -112,63 +96,49 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
+  Column _create_card_column(String topCard, String task) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text(topCard,
+            style: TextStyle(
+              color: Colors.white,
+            )),
+        Icon(
+          Icons.school,
+          color: Colors.white,
+        ),
+        Text(task,
+            style: TextStyle(
+              color: Colors.white,
+            )),
+      ],
+    );
+  }
+
   // Creates widget's dynamically
   List<Widget> _create_cards() {
     List listings = List<Widget>();
     int i = 0;
     for (i = 0; i < collection.tasks.length; i++) {
       bool check_front = false;
-      // if (collection.tasks[i].completed >= 1) {check_front=true;}
       listings.add(
         FlipCard(
           onFront: check_front,
           direction: FlipDirection.HORIZONTAL, // default
           front: Container(
             padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text('Task Complete!',
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-                Icon(
-                  Icons.school,
-                  color: Colors.white,
-                ),
-                Text(collection.tasks[i].name,
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-              ],
-            ),
+            child:
+                _create_card_column("Task Complete", collection.tasks[i].name),
             color: Colors.green,
           ),
           //   ),
           back: Container(
             padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Icon(
-                  Icons.school,
-                  color: Colors.white,
-                ),
-                Text(collection.tasks[i].name,
-                    style: TextStyle(
-                      color: Colors.white,
-                    )),
-              ],
-            ),
+            child: _create_card_column("Incomplete", collection.tasks[i].name),
             color: Colors.red,
           ),
         ),
-
-        // Container(
-        //     padding: const EdgeInsets.all(8),
-        //     child: const Icon(Icons.school),
-        //     color: Colors.green,
-        //   ),
       );
     }
     return listings;
